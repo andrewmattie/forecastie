@@ -461,27 +461,46 @@ public class MainActivity extends BaseActivity implements LocationListener {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 
         // Temperature
-        float temperature = UnitConvertor.convertTemperature(Float.parseFloat(todayWeather.getTemperature()), sp);
-        if (sp.getBoolean("temperatureInteger", false)) {
-            temperature = Math.round(temperature);
+        float temperature = 0;
+
+        try {
+            temperature = Float.parseFloat(todayWeather.getTemperature());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (sp.getBoolean("temperatureInteger", false)) {
+                temperature = Math.round(temperature);
+            }
         }
+        temperature = UnitConvertor.convertTemperature(temperature, sp);
 
         // Rain
-        double rain = Double.parseDouble(todayWeather.getRain());
+        double rain = 0;
+        try {
+            rain = Double.parseDouble(todayWeather.getRain());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String rainString = UnitConvertor.getRainString(rain, sp);
 
         // Wind
-        double wind;
+        double wind = 0;
         try {
             wind = Double.parseDouble(todayWeather.getWind());
         } catch (Exception e) {
             e.printStackTrace();
-            wind = 0;
         }
         wind = UnitConvertor.convertWind(wind, sp);
 
         // Pressure
-        double pressure = UnitConvertor.convertPressure((float) Double.parseDouble(todayWeather.getPressure()), sp);
+        double pressure = 0;
+
+        try {
+            pressure = Double.parseDouble(todayWeather.getPressure());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        pressure = UnitConvertor.convertPressure((float) pressure, sp);
 
         todayTemperature.setText(new DecimalFormat("0.#").format(temperature) + " " + sp.getString("unit", "°C"));
         todayDescription.setText(todayWeather.getDescription().substring(0, 1).toUpperCase() +
